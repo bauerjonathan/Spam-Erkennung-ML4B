@@ -2,18 +2,13 @@ streamlit==0.84.1
 nltk == 3.6.2
 Pillow==8.3.1
 scikit-learn
-import streamlit as st 
-import pickle
-import sklearn
-from nltk.corpus import stopwords
-import nltk 
-import string 
-from nltk.stem.porter import PorterStemmer
-ps = PorterStemmer()
-from PIL import Image
-nltk.download('punkt')
-nltk.download('stopwords')
-import pandas as pd 
-import numpy as np 
-import matplotlib.pyplot as plt 
-import seaborn as sns
+streamlit
+pickle
+sklearn
+string
+PorterStemmer
+Image
+pandas
+numpy
+matplotlib.pyplot
+seaborn
