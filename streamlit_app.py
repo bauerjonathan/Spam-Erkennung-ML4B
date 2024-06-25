@@ -141,3 +141,16 @@ ax[1, 1].set_ylim(0, 1)
 ax[1, 1].set_title('F1-Score')
 
 st.pyplot(fig)
+
+
+#Sidebar
+st.sidebar.header("Überprüfe deine E-Mails auf Spam")
+st.sidebar.write("Die App nutzt fortschrittliche Textverarbeitungs- und maschinelle Lerntechniken, um eine zuverlässige Spam-Erkennung zu gewährleisten. ")
+st.sidebar.markdown("#### Motivation")
+st.sidebar.markdown("- E-Mails sind ein wichtiges Kommunikationsmittel")
+st.sidebar.markdown("- Spam und Phishing, etc. werden immer raffinierter")
+st.sidebar.markdown("- Mail-Provider wollen Kunden maximale sicherheit ermöglichen")
+st.sidebar.write("")
+st.sidebar.write("")
+st.sidebar.write("## Mitwirkende")
+st.sidebar.markdown("Jonathan Bauer, Aryan Rajput, Leon Hirschpeck, Behnam Irani")
