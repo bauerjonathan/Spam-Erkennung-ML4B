@@ -1,4 +1,3 @@
-# streamlit_app.py
 import streamlit as st
 import numpy as np 
 import pandas as pd 
@@ -15,7 +14,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-from nltk.stem.snowball import GermanStemmer
+from nltk.stem import PorterStemmer
 
 # Laden der CSV-Datei
 df = pd.read_csv("email.csv")
@@ -29,8 +28,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_
 # Vorverarbeitung der Trainingsdaten
 def tokenize(text):
     tokens = word_tokenize(text)
-    stemmer = GermanStemmer()
-    stop_words = set(stopwords.words('german'))
+    stemmer = PorterStemmer()
+    stop_words = set(stopwords.words('english'))
     tokens = [stemmer.stem(token) for token in tokens if token.lower() not in stop_words and token.isalpha()]
     return tokens
 
@@ -62,16 +61,16 @@ clf_rf.fit(X_train_processed, y_train)
 
 # Streamlit App
 st.title("Email Spam Detector")
-st.write("Geben Sie eine E-Mail ein, um zu sehen, ob sie Spam oder Ham ist.")
+st.write("Enter an email to see if it's spam or ham.")
 
-user_input = st.text_area("E-Mail Inhalt", "")
+user_input = st.text_area("Email Content", "")
 
 model_option = st.selectbox(
-    "Wählen Sie ein Modell zur Vorhersage aus:",
+    "Choose a model for prediction:",
     ("Naive Bayes", "SVM", "KNN", "Decision Tree", "Random Forest")
 )
 
-if st.button("Vorhersagen"):
+if st.button("Predict"):
     if user_input:
         input_processed = ' '.join(tokenize(user_input))
         if model_option == "Naive Bayes":
@@ -86,11 +85,11 @@ if st.button("Vorhersagen"):
             prediction = clf_rf.predict([input_processed])
 
         if prediction == 1:
-            st.write("Das Modell sagt: **Spam**")
+            st.write("The model predicts: **Spam**")
         else:
-            st.write("Das Modell sagt: **Ham**")
+            st.write("The model predicts: **Ham**")
     else:
-        st.write("Bitte geben Sie einen Text ein, um eine Vorhersage zu erhalten.")
+        st.write("Please enter text to get a prediction.")
 
 # Berechnung der Metriken
 def calculate_metrics(model, X_test, y_test):
@@ -109,12 +108,12 @@ dt_metrics = calculate_metrics(clf_DecisionTree, X_test, y_test)
 rf_metrics = calculate_metrics(clf_rf, X_test, y_test)
 
 # Anzeige der Metriken
-st.write("### Modell-Metriken")
+st.write("### Model Metrics")
 
 metrics_df = pd.DataFrame({
-    "Modell": ["Naive Bayes", "SVM", "KNN", "Decision Tree", "Random Forest"],
-    "Genauigkeit": [naive_metrics[0], svm_metrics[0], knn_metrics[0], dt_metrics[0], rf_metrics[0]],
-    "Präzision": [naive_metrics[1], svm_metrics[1], knn_metrics[1], dt_metrics[1], rf_metrics[1]],
+    "Model": ["Naive Bayes", "SVM", "KNN", "Decision Tree", "Random Forest"],
+    "Accuracy": [naive_metrics[0], svm_metrics[0], knn_metrics[0], dt_metrics[0], rf_metrics[0]],
+    "Precision": [naive_metrics[1], svm_metrics[1], knn_metrics[1], dt_metrics[1], rf_metrics[1]],
     "Recall": [naive_metrics[2], svm_metrics[2], knn_metrics[2], dt_metrics[2], rf_metrics[2]],
     "F1-Score": [naive_metrics[3], svm_metrics[3], knn_metrics[3], dt_metrics[3], rf_metrics[3]]
 })
@@ -124,33 +123,32 @@ st.write(metrics_df)
 # Visualisierung der Metriken
 fig, ax = plt.subplots(2, 2, figsize=(15, 10))
 
-sns.barplot(x='Modell', y='Genauigkeit', data=metrics_df, ax=ax[0, 0])
+sns.barplot(x='Model', y='Accuracy', data=metrics_df, ax=ax[0, 0])
 ax[0, 0].set_ylim(0, 1)
-ax[0, 0].set_title('Genauigkeit')
+ax[0, 0].set_title('Accuracy')
 
-sns.barplot(x='Modell', y='Präzision', data=metrics_df, ax=ax[0, 1])
+sns.barplot(x='Model', y='Precision', data=metrics_df, ax=ax[0, 1])
 ax[0, 1].set_ylim(0, 1)
-ax[0, 1].set_title('Präzision')
+ax[0, 1].set_title('Precision')
 
-sns.barplot(x='Modell', y='Recall', data=metrics_df, ax=ax[1, 0])
+sns.barplot(x='Model', y='Recall', data=metrics_df, ax=ax[1, 0])
 ax[1, 0].set_ylim(0, 1)
 ax[1, 0].set_title('Recall')
 
-sns.barplot(x='Modell', y='F1-Score', data=metrics_df, ax=ax[1, 1])
+sns.barplot(x='Model', y='F1-Score', data=metrics_df, ax=ax[1, 1])
 ax[1, 1].set_ylim(0, 1)
 ax[1, 1].set_title('F1-Score')
 
 st.pyplot(fig)
 
-
 #Sidebar
-st.sidebar.header("Überprüfe deine E-Mails auf Spam")
-st.sidebar.write("Die App nutzt fortschrittliche Textverarbeitungs- und maschinelle Lerntechniken, um eine zuverlässige Spam-Erkennung zu gewährleisten. ")
+st.sidebar.header("Check Your Emails for Spam")
+st.sidebar.write("This app uses advanced text processing and machine learning techniques to ensure reliable spam detection.")
 st.sidebar.markdown("#### Motivation")
-st.sidebar.markdown("- E-Mails sind ein wichtiges Kommunikationsmittel")
-st.sidebar.markdown("- Spam und Phishing, etc. werden immer raffinierter")
-st.sidebar.markdown("- Mail-Provider wollen Kunden maximale sicherheit ermöglichen")
+st.sidebar.markdown("- Emails are a crucial means of communication")
+st.sidebar.markdown("- Spam and phishing attacks are becoming more sophisticated")
+st.sidebar.markdown("- Email providers want to offer maximum security to their customers")
 st.sidebar.write("")
 st.sidebar.write("")
-st.sidebar.write("## Mitwirkende")
+st.sidebar.write("## Contributors")
 st.sidebar.markdown("Jonathan Bauer, Aryan Rajput, Leon Hirschpeck, Behnam Irani")
