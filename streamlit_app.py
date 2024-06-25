@@ -15,6 +15,9 @@ from sklearn.ensemble import RandomForestClassifier
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
 
 # Laden der CSV-Datei
 df = pd.read_csv("email.csv")
